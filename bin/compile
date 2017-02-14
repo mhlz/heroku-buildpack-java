@@ -16,15 +16,25 @@ ENV_DIR=$3
 export_env_dir $ENV_DIR
 
 JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz}
+
+echo Downloading Java from $JVM_COMMON_BUILDPACK
+
 mkdir -p /tmp/jvm-common
-curl --retry 3 --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common --strip-components=1
+curl --retry 3 --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common --strip-components=1
 . /tmp/jvm-common/bin/util
 . /tmp/jvm-common/bin/java
 . /tmp/jvm-common/opt/jdbc.sh
+
+echo Installing Java
+
 install_java_with_overlay ${BUILD_DIR}
+
+echo Done
 
 #create the cache dir if it doesn't exist
 mkdir -p $CACHE_DIR
+
+echo Running MAVEN
 
 run_mvn "compile" $BUILD_DIR $CACHE_DIR
 
