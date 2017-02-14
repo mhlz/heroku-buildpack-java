@@ -46,10 +46,12 @@ run_mvn() {
   local mavenInstallDir=${3}
 
   if has_maven_wrapper $home; then
+    echo using maven wrapper
     cache_copy ".m2/wrapper" $mavenInstallDir $home
     chmod +x $home/mvnw
     local mavenExe="./mvnw"
   else
+    echo using maven from cloud install
     cd $mavenInstallDir
     install_maven ${mavenInstallDir} ${home}
     PATH="${mavenInstallDir}/.maven/bin:$PATH"
